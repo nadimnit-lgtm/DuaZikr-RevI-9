@@ -1,0 +1,306 @@
+name: Build Dua & Zikr Rev I-9 APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate and Build Rev I-9 Debug APK
+    runs-on: ubuntu-latest
+
+    env:
+      JAVA_VERSION: "17"
+      ANDROID_COMPILE_SDK: "34"
+      ANDROID_BUILD_TOOLS: "34.0.0"
+      GRADLE_VERSION: "8.9"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Locate Android project root
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -f "settings.gradle" ] || [ -f "settings.gradle.kts" ]; then
+            PROJECT_DIR="."
+          elif [ -f "AzkarTvDisplay/settings.gradle" ] || [ -f "AzkarTvDisplay/settings.gradle.kts" ]; then
+            PROJECT_DIR="AzkarTvDisplay"
+          else
+            echo "::error::settings.gradle not found. Upload the Android project root correctly."
+            echo "Expected either:"
+            echo "1) settings.gradle in repository root"
+            echo "2) AzkarTvDisplay/settings.gradle"
+            exit 1
+          fi
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "Android project root detected: $PROJECT_DIR"
+
+      - name: Remove invalid Gradle wrapper JARs from CI workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Removing invalid or unverified Gradle wrapper JAR files from CI workspace."
+          find "$GITHUB_WORKSPACE" -path "*/gradle/wrapper/gradle-wrapper.jar" -type f -print -delete || true
+
+          if find "$GITHUB_WORKSPACE" -path "*/gradle/wrapper/gradle-wrapper.jar" -type f | grep -q .; then
+            echo "::error::Gradle wrapper JAR still exists after cleanup."
+            exit 1
+          fi
+
+          echo "Wrapper JAR cleanup completed. Build will use official Gradle ${GRADLE_VERSION}."
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        shell: bash
+        run: yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
+      - name: Install required Android SDK packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager \
+            "platforms;android-${ANDROID_COMPILE_SDK}" \
+            "build-tools;${ANDROID_BUILD_TOOLS}" \
+            "platform-tools"
+
+      - name: Install official Gradle without wrapper validation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          GRADLE_ZIP="gradle-${GRADLE_VERSION}-bin.zip"
+          GRADLE_URL="https://services.gradle.org/distributions/${GRADLE_ZIP}"
+          INSTALL_DIR="$RUNNER_TEMP/gradle"
+
+          mkdir -p "$INSTALL_DIR"
+
+          echo "Downloading official Gradle ${GRADLE_VERSION}."
+          curl -fL "$GRADLE_URL" -o "$RUNNER_TEMP/$GRADLE_ZIP"
+
+          echo "Installing official Gradle ${GRADLE_VERSION}."
+          unzip -q "$RUNNER_TEMP/$GRADLE_ZIP" -d "$INSTALL_DIR"
+
+          echo "$INSTALL_DIR/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
+
+      - name: Show official Gradle version
+        shell: bash
+        run: gradle --version
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate required Rev I-9 project files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+
+          required_files=(
+            "settings.gradle"
+            "build.gradle"
+            "gradle.properties"
+            "app/build.gradle"
+            "app/src/main/AndroidManifest.xml"
+            "app/src/main/java/com/ahmed/azkartv/MainActivity.kt"
+            "app/src/main/assets/index.html"
+            "app/src/main/assets/app.css"
+            "app/src/main/assets/app-tv.css"
+            "app/src/main/assets/app.js"
+            "app/src/main/assets/content/content.json"
+            "app/src/main/assets/content/sections.json"
+            "tools/validate.py"
+            "tools/test_logic.py"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "::error::Missing required file: $file"
+              echo "Current project directory:"
+              pwd
+              echo "Available files:"
+              find . -maxdepth 3 -type f | sort
+              exit 1
+            fi
+          done
+
+          echo "All required Rev I-9 project files are present."
+
+      - name: Validate JSON content files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+
+          python3 - <<'PY'
+          import glob
+          import json
+          import sys
+
+          failed = False
+
+          for path in sorted(glob.glob("app/src/main/assets/content/*.json")):
+              try:
+                  with open(path, "r", encoding="utf-8") as handle:
+                      json.load(handle)
+                  print(f"Valid JSON: {path}")
+              except Exception as error:
+                  print(f"::error::Invalid JSON in {path}: {error}")
+                  failed = True
+
+          if failed:
+              sys.exit(1)
+          PY
+
+      - name: Run content validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          python3 tools/validate.py
+
+      - name: Run logic tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          python3 tools/test_logic.py
+
+      - name: JavaScript syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+          node --check app/src/main/assets/app.js
+
+      - name: Confirm Rev I-9 TV hierarchy polish
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+
+          grep -q "versionCode 30" app/build.gradle || {
+            echo "::error::versionCode 30 not found in app/build.gradle."
+            exit 1
+          }
+
+          grep -q "versionName \"Rev I-9 - TV Hierarchy Polish\"" app/build.gradle || {
+            echo "::error::Rev I-9 versionName not found in app/build.gradle."
+            exit 1
+          }
+
+          grep -q "namespace 'com.ahmed.azkartv'" app/build.gradle || {
+            echo "::error::Expected namespace com.ahmed.azkartv not found."
+            exit 1
+          }
+
+          grep -q "window.__azkarTvKey" app/src/main/assets/app.js || {
+            echo "::error::TV remote key bridge missing in app.js."
+            exit 1
+          }
+
+          grep -q "applyTvLivePreviewValues" app/src/main/assets/app.js || {
+            echo "::error::TV live preview helper missing in app.js."
+            exit 1
+          }
+
+          grep -q "function tvSettingsKey" app/src/main/assets/app.js || {
+            echo "::error::TV settings focus walker missing in app.js."
+            exit 1
+          }
+
+          grep -q "body.tv" app/src/main/assets/app-tv.css || {
+            echo "::error::TV stylesheet is not scoped to body.tv."
+            exit 1
+          }
+
+          echo "Rev I-9 TV hierarchy checks passed."
+
+      - name: Confirm runtime is audio-free
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+
+          if grep -RIn "audioBase\|recAudio\|recBtn\|recitationNotes" app/src/main/assets app/src/main/java app/src/main/res 2>/dev/null; then
+            echo "::error::Audio or legacy recitation runtime references still exist."
+            exit 1
+          fi
+
+          echo "Runtime audio-free check passed."
+
+      - name: Build debug APK with official Gradle
+        shell: bash
+        run: |
+          set +e
+          cd "$PROJECT_DIR"
+
+          for attempt in 1 2 3; do
+            echo "::group::Debug build attempt ${attempt} of 3"
+            gradle --no-daemon --stacktrace --warning-mode all :app:assembleDebug
+            status=$?
+            echo "::endgroup::"
+
+            if [ "$status" -eq 0 ]; then
+              echo "Debug build succeeded on attempt ${attempt}."
+              exit 0
+            fi
+
+            echo "Debug build attempt ${attempt} failed with exit code ${status}."
+
+            if [ "$attempt" -lt 3 ]; then
+              echo "Cleaning Gradle dependency cache before retry."
+              rm -rf ~/.gradle/caches/modules-2/files-2.1 || true
+              sleep 30
+            fi
+          done
+
+          echo "::error::Debug build failed after 3 attempts."
+          exit 1
+
+      - name: Prepare Rev I-9 APK artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PROJECT_DIR"
+
+          APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+
+          if [ ! -f "$APK_PATH" ]; then
+            echo "::error::Debug APK not generated at $APK_PATH"
+            exit 1
+          fi
+
+          mkdir -p "$GITHUB_WORKSPACE/artifact"
+          cp "$APK_PATH" "$GITHUB_WORKSPACE/artifact/dua-zikr-rev-i-9-debug.apk"
+
+          echo "APK artifact prepared:"
+          ls -lah "$GITHUB_WORKSPACE/artifact"
+
+      - name: Upload Rev I-9 debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dua-and-zikr-rev-i-9-debug-apk
+          path: artifact/dua-zikr-rev-i-9-debug.apk
+          if-no-files-found: error
+          retention-days: 14
