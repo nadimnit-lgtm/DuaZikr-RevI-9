@@ -1,0 +1,1083 @@
+/* ============================================================================
+   Rev I-8 — Android TV major visual and live feedback polish
+   Scope: body.tv only. Phone and tablet layouts remain controlled by app.css.
+   ============================================================================ */
+
+body.tv {
+  --tv-gap: clamp(12px, 1.1vw, 22px);
+  --tv-pad-x: clamp(42px, 4.2vw, 96px);
+  --tv-radius: clamp(18px, 1.35vw, 28px);
+  --tv-gold: #e1bd5d;
+  --tv-olive: #a8bd46;
+  --tv-panel: rgba(12, 20, 27, .86);
+  --tv-panel-2: rgba(17, 28, 31, .82);
+  --tv-line: rgba(225, 189, 93, .38);
+  --tv-line-soft: rgba(225, 189, 93, .18);
+  --tv-focus: #ffd96d;
+  --tv-text: #f6f0e5;
+  --tv-muted: #c9c4b9;
+  --tv-green: #77d764;
+  background:
+    radial-gradient(90% 80% at 50% -20%, rgba(225,189,93,.14), transparent 58%),
+    radial-gradient(70% 80% at 80% 20%, rgba(98,200,255,.08), transparent 54%),
+    linear-gradient(180deg, #07101d 0%, #030811 100%) !important;
+}
+body.tv.tv-accent-gold { --tv-olive: #d7b65c; }
+body.tv.tv-accent-olive { --tv-olive: #a8bd46; }
+body.tv #app { padding:0 !important; height:100dvh; max-height:100dvh; overflow:hidden; }
+body.tv .bg-geometry { opacity:.035; color:var(--tv-gold); }
+
+/* ---------------------------------------------------------------- Header: top bar + prayer merged */
+body.tv .topbar {
+  position:relative; z-index:5; flex:0 0 auto;
+  min-height:clamp(86px, 9.2vh, 118px); height:clamp(86px, 9.2vh, 118px);
+  display:flex; align-items:center; gap:var(--tv-gap);
+  padding:clamp(14px, 1.8vh, 24px) var(--tv-pad-x);
+  border-bottom:1px solid rgba(225,189,93,.22);
+  background:linear-gradient(180deg, rgba(7,13,24,.92), rgba(6,12,22,.78));
+  box-shadow:0 2px 28px rgba(0,0,0,.35);
+  direction:ltr;
+}
+body.tv .brand-mark {
+  display:grid !important; place-items:center; width:clamp(48px, 4.6vw, 72px); height:clamp(48px, 4.6vw, 72px);
+  filter:drop-shadow(0 0 12px rgba(225,189,93,.22));
+}
+body.tv .brand-mark svg { width:100%; height:100%; }
+body.tv .section-pick {
+  flex:0 1 clamp(220px, 20vw, 380px); min-width:180px; padding:0 8px;
+  border-radius:18px; align-items:flex-start; text-align:left;
+}
+body.tv .section-pick .current {
+  display:block; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-family:"ReemKufi", "Segoe UI", system-ui, sans-serif;
+  font-size:clamp(24px, 2.2vw, 42px); line-height:1.08; font-weight:800;
+  color:var(--tv-text); letter-spacing:-.01em;
+  text-shadow:0 2px 18px rgba(0,0,0,.32);
+}
+body.tv .section-pick .current .caret { display:none; }
+body.tv .ar-size { margin-left:auto; display:flex; align-items:center; gap:clamp(10px, .8vw, 16px); border:0; border-radius:0; overflow:visible; }
+body.tv .ar-size-btn,
+body.tv .topbar .icon-btn {
+  width:clamp(54px, 4.8vw, 78px); height:clamp(54px, 4.8vw, 78px);
+  display:grid; place-items:center; flex:0 0 auto; border-radius:999px;
+  background:linear-gradient(145deg, rgba(38,48,62,.96), rgba(14,22,34,.98));
+  color:#e9e7df; border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18), 0 12px 24px rgba(0,0,0,.38);
+  font-size:clamp(22px, 1.8vw, 32px); font-weight:900;
+}
+body.tv .topbar .icon-btn svg { width:clamp(26px, 2.2vw, 36px); height:clamp(26px, 2.2vw, 36px); }
+body.tv .share-btn { display:none !important; }
+body.tv #contrastBtn { color:#101820; background:linear-gradient(145deg, #f5d577, #cfa13b); box-shadow:0 0 22px rgba(225,189,93,.34), 0 12px 26px rgba(0,0,0,.36); }
+body.tv #openSettings { margin-left:clamp(6px, .5vw, 12px); }
+
+body.tv .prayer-ribbon {
+  position:absolute; z-index:6; top:clamp(18px, 2.2vh, 30px);
+  left:clamp(330px, 27vw, 560px); right:clamp(330px, 26vw, 520px);
+  height:clamp(48px, 5.2vh, 70px); margin:0; padding:0 clamp(18px, 1.6vw, 30px);
+  display:flex; align-items:center; gap:clamp(14px, 1.2vw, 24px);
+  border-radius:999px; color:var(--tv-text); font-size:clamp(17px, 1.35vw, 24px);
+  background:linear-gradient(90deg, rgba(76,91,31,.55), rgba(15,25,24,.82));
+  border:1px solid rgba(225,189,93,.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 12px 30px rgba(0,0,0,.24);
+  overflow:hidden;
+}
+body.tv .prayer-ribbon::before {
+  content:""; flex:0 0 auto; width:clamp(34px, 3vw, 50px); height:clamp(34px, 3vw, 50px); border-radius:50%;
+  background:radial-gradient(circle at 50% 45%, rgba(225,189,93,.95), rgba(168,189,70,.55) 58%, rgba(168,189,70,.10) 62%);
+  box-shadow:0 0 0 1px rgba(225,189,93,.34), 0 0 18px rgba(168,189,70,.25);
+}
+body.tv .prayer-ribbon .next { color:#d8f276; font-weight:900; font-family:"ReemKufi", sans-serif; }
+body.tv .prayer-ribbon #prayerCity { color:var(--tv-text); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+body.tv .prayer-ribbon #prayerCity::before { content:"⌖"; color:var(--tv-olive); margin-inline:2px 8px; }
+body.tv .prayer-ribbon .time { margin-left:auto; color:#fff8e9; font-weight:900; font-variant-numeric:tabular-nums; }
+body.tv .prayer-ribbon .dot { width:5px; height:5px; border-radius:50%; background:rgba(225,189,93,.76); opacity:1; }
+body.tv .prayer-ribbon .approx.conn-dot {
+  display:inline-block !important; width:clamp(10px, .9vw, 14px); height:clamp(10px, .9vw, 14px); min-height:0; padding:0; border:0; border-radius:50%;
+  text-indent:-9999px; overflow:hidden; background:var(--tv-muted); box-shadow:0 0 0 5px rgba(255,255,255,.04);
+}
+body.tv .prayer-ribbon .approx.conn-dot.is-online { background:var(--tv-green); box-shadow:0 0 0 5px rgba(119,215,100,.16); }
+body.tv .prayer-ribbon .approx.conn-dot.is-offline { background:#e16652; box-shadow:0 0 0 5px rgba(225,102,82,.18); }
+body.tv .prayer-ribbon .approx.conn-dot.is-approx { background:#e0b34f; box-shadow:0 0 0 5px rgba(224,179,79,.18); }
+
+/* ---------------------------------------------------------------- Reading canvas */
+body.tv .stage { flex:1 1 auto; min-height:0; padding:clamp(18px, 2vh, 28px) var(--tv-pad-x) 0; display:flex; align-items:stretch; justify-content:center; }
+body.tv .reader {
+  width:100%; max-width:min(1770px, 93vw); margin:0 auto; overflow:hidden;
+  display:flex; flex-direction:column; border-radius:var(--tv-radius);
+  background:linear-gradient(180deg, rgba(17,25,32,.88), rgba(7,14,22,.92));
+  border:1px solid rgba(225,189,93,.52); box-shadow:0 28px 58px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06);
+}
+body.tv .reader::before { display:none; }
+body.tv .reader-scroll {
+  flex:1 1 auto; min-height:0; overflow-y:auto; overflow-x:hidden; scrollbar-width:thin; scrollbar-color:rgba(225,189,93,.36) transparent;
+  padding:clamp(20px, 2.2vh, 34px) clamp(54px, 4.4vw, 92px) clamp(22px, 2.4vh, 40px);
+  display:flex !important; flex-direction:column; align-items:stretch; gap:clamp(14px, 1.4vh, 22px);
+  text-align:center; justify-content:flex-start !important;
+}
+body.tv .reader-scroll::-webkit-scrollbar { width:8px; }
+body.tv .reader-scroll::-webkit-scrollbar-thumb { background:rgba(225,189,93,.34); border-radius:999px; }
+body.tv .bismillah-row {
+  order:1; position:relative; align-self:center; max-width:86%; margin:0 auto clamp(2px, .4vh, 8px); padding:0 clamp(110px, 9vw, 180px);
+  color:#f2cd81; font-family:"Scheherazade", "Amiri", serif; font-size:clamp(34px, 3.2vw, 64px); line-height:1.22; font-weight:700;
+  text-align:center; text-shadow:0 0 22px rgba(225,189,93,.28);
+  background:transparent !important; border:0 !important; box-shadow:none !important;
+}
+body.tv .bismillah-row::before,
+body.tv .bismillah-row::after {
+  content:""; position:absolute; top:50%; width:clamp(70px, 8vw, 170px); height:1px;
+  background:linear-gradient(90deg, transparent, rgba(225,189,93,.76)); opacity:.7;
+}
+body.tv .bismillah-row::before { left:0; }
+body.tv .bismillah-row::after { right:0; transform:scaleX(-1); }
+body.tv .bismillah-row[data-bismillah-size="normal"] { font-size:clamp(28px, 2.6vw, 50px); }
+body.tv .bismillah-row[data-bismillah-size="medium"] { font-size:clamp(31px, 2.9vw, 56px); }
+body.tv .bismillah-row[data-bismillah-size="xl"] { font-size:clamp(40px, 3.6vw, 72px); }
+body.tv .bismillah-row[data-bismillah-color="gold"], body.tv.tv-accent-gold .bismillah-row { color:#f4d08a !important; }
+body.tv .bismillah-row[data-bismillah-color="olive"], body.tv.tv-accent-olive .bismillah-row { color:#d9c77f !important; }
+body.tv .bismillah-row[data-bismillah-color="dark"] { color:#cdbb78 !important; }
+body.tv .meta-row { order:2; justify-content:center; gap:8px; padding:0 !important; margin:0 !important; }
+body.tv .meta-row .chip,
+body.tv .meta-row .flow-tag,
+body.tv .meta-row .verify { min-height:30px; padding:4px 12px; font-size:clamp(12px, .9vw, 16px); background:rgba(225,189,93,.09); border-color:rgba(225,189,93,.18); color:#d6bd78; }
+body.tv .meta-row .copy-btn { display:none !important; }
+body.tv .item-title {
+  order:3; margin:0 auto clamp(8px, .8vh, 14px); max-width:80%; align-self:center;
+  color:var(--tv-text); font-family:"ReemKufi", "Segoe UI", system-ui, sans-serif;
+  font-size:clamp(24px, 2.15vw, 36px); line-height:1.12; font-weight:800; text-align:center;
+  text-shadow:0 3px 18px rgba(0,0,0,.38);
+}
+body.tv .reader-scroll > .arabic,
+body.tv .reader-scroll .translit,
+body.tv .reader-scroll .english-translation,
+body.tv .reader-scroll .urdu-translation {
+  width:100%; margin:0; border-radius:calc(var(--tv-radius) - 4px);
+  background:linear-gradient(180deg, rgba(26,36,36,.86), rgba(9,16,23,.88));
+  border:1px solid rgba(255,255,255,.18); box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 14px 32px rgba(0,0,0,.26);
+}
+body.tv .reader-scroll > .arabic {
+  order:4; min-height:clamp(118px, 14vh, 190px); display:flex; align-items:center; justify-content:center;
+  padding:clamp(24px, 2.4vw, 44px) clamp(36px, 3.2vw, 70px) !important;
+  font-family:"Scheherazade", "Scheherazade New", "Amiri", serif;
+  font-size:var(--ar-size, clamp(46px, 4.4vw, 82px)); line-height:1.72; font-weight:700;
+  color:#f8f2e8; text-align:center !important; text-shadow:0 0 24px rgba(244,210,150,.18);
+  word-break:keep-all !important; overflow-wrap:normal !important; white-space:normal !important; hyphens:none;
+}
+body.tv .side-zone { order:5; display:flex !important; flex-direction:column; gap:clamp(12px, 1.2vh, 18px); max-width:none; width:100%; margin:0; border-left:0; padding-left:0; }
+body.tv .reader-scroll .translit,
+body.tv .reader-scroll .english-translation,
+body.tv .reader-scroll .urdu-translation { padding:clamp(16px, 1.4vw, 26px) clamp(28px, 2.6vw, 54px) !important; }
+body.tv .translit { font-size:var(--tl-size, clamp(20px, 1.65vw, 30px)); line-height:1.45; text-align:center; font-weight:650; color:#d9c46d; font-style:italic; letter-spacing:.01em; }
+body.tv .translation { font-size:var(--tr-size, clamp(20px, 1.62vw, 30px)); line-height:1.48; text-align:center; font-weight:600; color:#f0ede5; }
+body.tv .urdu-translation { font-family:"NastaliqUrdu", "Scheherazade", serif; line-height:2.05; text-align:center; }
+body.tv .source-row { display:none !important; }
+body.tv .scroll-hint { display:none !important; }
+
+/* ---------------------------------------------------------------- Bottom progress only */
+body.tv .bottombar { flex:0 0 auto; border-top:0 !important; padding:clamp(10px, 1.1vh, 16px) var(--tv-pad-x) clamp(18px, 2vh, 30px); display:flex; align-items:center; justify-content:center; gap:0; }
+body.tv .bottombar .nav-btn { display:none !important; }
+body.tv .progress-wrap { width:100%; max-width:none; flex:1 1 auto; gap:clamp(8px, .8vh, 14px); align-items:stretch; }
+body.tv .progress-track { height:clamp(6px, .7vh, 10px); border-radius:999px; background:rgba(225,189,93,.14); border:1px solid rgba(225,189,93,.40); overflow:hidden; }
+body.tv .progress-fill { background:linear-gradient(90deg, #f1c863, #a8bd46) !important; box-shadow:0 0 16px rgba(225,189,93,.45); }
+body.tv .counter { justify-content:center; font-size:clamp(20px, 1.8vw, 32px); font-weight:800; color:#e7c970; font-variant-numeric:tabular-nums; }
+body.tv .counter .auto-flag { display:none; }
+body.tv.hide-progress .progress-wrap { display:none !important; }
+
+/* ---------------------------------------------------------------- Settings: exact TV-oriented single column */
+body.tv #settingsSheet {
+  left:0; right:0; top:0; bottom:0; width:100%; max-width:100%; max-height:100%; border:0; border-radius:0;
+  display:flex; flex-direction:column; overflow:hidden; padding:0 var(--tv-pad-x) !important;
+  background:radial-gradient(90% 70% at 60% -20%, rgba(225,189,93,.13), transparent 58%), linear-gradient(180deg, #07101d, #030811);
+  transform:translateY(102%);
+}
+body.tv #settingsSheet.open { transform:translateY(0); }
+body.tv #settingsSheet .sheet-grab { display:none; }
+body.tv #settingsSheet .sheet-head {
+  flex:0 0 auto; min-height:clamp(76px, 8vh, 104px); padding:clamp(12px, 1.5vh, 22px) 0 !important;
+  display:flex; align-items:center; gap:clamp(16px, 1.4vw, 26px); border-bottom:1px solid rgba(225,189,93,.22) !important;
+}
+body.tv #settingsSheet .sheet-head .icon-btn {
+  order:-1; width:clamp(54px, 4.4vw, 72px); height:clamp(54px, 4.4vw, 72px); border-radius:999px;
+  background:rgba(10,18,30,.82); border:1px solid rgba(225,189,93,.28); color:#f3cf77;
+}
+body.tv #settingsSheet .sheet-head .icon-btn svg { display:none; }
+body.tv #settingsSheet .sheet-head .icon-btn::before { content:"←"; font-size:clamp(28px, 2.6vw, 42px); line-height:1; }
+body.tv #settingsSheet .sheet-head h2 {
+  margin:0; display:flex; align-items:baseline; gap:clamp(20px, 2vw, 34px); min-width:0; flex:1;
+  color:var(--tv-text); font-family:"ReemKufi", "Segoe UI", system-ui, sans-serif; font-size:clamp(30px, 2.8vw, 50px); font-weight:900;
+}
+body.tv #settingsSheet .sheet-head h2::after {
+  content:attr(data-tv-subtitle); display:inline-block; margin:0; padding-left:clamp(18px, 1.4vw, 28px); border-left:1px solid rgba(225,189,93,.46);
+  color:#c7ad62; font-family:"Segoe UI", system-ui, sans-serif; font-size:clamp(16px, 1.3vw, 24px); font-weight:500; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+body.tv #settingsSheet .sheet-body {
+  flex:1 1 auto; min-height:0; overflow-y:auto; padding:clamp(18px, 2vh, 32px) 0 clamp(18px, 2vh, 32px) !important;
+  -webkit-overflow-scrolling:auto; scrollbar-width:thin; scrollbar-color:rgba(225,189,93,.36) transparent;
+}
+body.tv #settingsSheet .sheet-body::-webkit-scrollbar { width:8px; }
+body.tv #settingsSheet .sheet-body::-webkit-scrollbar-thumb { background:rgba(225,189,93,.34); border-radius:999px; }
+body.tv #settingsBody.tv-settings-list { display:flex !important; flex-direction:column; gap:clamp(8px, .9vh, 14px); max-width:min(1740px, 96vw); margin:0 auto; }
+body.tv .tv-set-row {
+  min-height:clamp(74px, 7.4vh, 106px); display:grid; grid-template-columns:clamp(58px, 4.8vw, 78px) minmax(360px, 1fr) minmax(330px, auto);
+  align-items:center; gap:clamp(18px, 1.7vw, 34px); padding:clamp(12px, 1.2vh, 18px) clamp(22px, 2vw, 36px);
+  border-radius:18px; background:linear-gradient(180deg, rgba(13,22,32,.86), rgba(8,15,23,.88));
+  border:1px solid rgba(225,189,93,.18); box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 10px 22px rgba(0,0,0,.22);
+}
+body.tv .tv-set-icon {
+  width:clamp(48px, 4vw, 66px); height:clamp(48px, 4vw, 66px); border-radius:50%; display:grid; place-items:center;
+  background:radial-gradient(circle at 45% 35%, rgba(168,189,70,.34), rgba(16,23,25,.92)); border:1px solid rgba(225,189,93,.30);
+  color:#d8c75b; font-size:clamp(20px, 1.8vw, 32px); font-weight:900;
+}
+body.tv .tv-set-label { min-width:0; }
+body.tv .tv-set-name { color:var(--tv-text); font-size:clamp(22px, 1.9vw, 34px); line-height:1.1; font-weight:850; }
+body.tv .tv-set-desc { margin-top:clamp(4px, .4vh, 8px); color:#d4cbb9; font-size:clamp(14px, 1.15vw, 20px); line-height:1.25; }
+body.tv .tv-set-control { display:flex; justify-content:flex-end; align-items:center; min-width:0; }
+body.tv .tv-stepper { display:flex; align-items:center; gap:clamp(14px, 1.2vw, 22px); }
+body.tv .tv-stepper button,
+body.tv .tv-toggle,
+body.tv .tv-seg button {
+  min-width:clamp(58px, 4.6vw, 82px); height:clamp(48px, 4.4vh, 64px); padding:0 clamp(16px, 1.4vw, 26px); border-radius:999px;
+  background:linear-gradient(180deg, rgba(25,35,48,.96), rgba(9,16,26,.98)); border:1px solid rgba(255,255,255,.16);
+  color:#f6f0e5; font-size:clamp(17px, 1.35vw, 24px); font-weight:800; box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+body.tv .tv-step-val { min-width:clamp(72px, 6vw, 112px); text-align:center; color:#f7f2e8; font-size:clamp(24px, 2vw, 36px); font-weight:900; font-variant-numeric:tabular-nums; }
+body.tv .tv-seg { display:flex; justify-content:flex-end; align-items:center; gap:0; border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.14); background:rgba(6,12,20,.72); }
+body.tv .tv-seg button { border-radius:0; border:0; border-left:1px solid rgba(255,255,255,.12); min-width:clamp(92px, 7.2vw, 138px); }
+body.tv .tv-seg button:first-child { border-left:0; }
+body.tv .tv-seg button.active { background:linear-gradient(180deg, rgba(126,142,40,.72), rgba(59,72,19,.86)); color:#ffe27a; box-shadow:inset 0 0 0 1px rgba(225,189,93,.30); }
+body.tv .tv-toggle { position:relative; min-width:clamp(108px, 7.8vw, 150px); text-align:right; padding-right:clamp(20px, 1.6vw, 30px); }
+body.tv .tv-toggle::before { content:""; position:absolute; left:clamp(9px, .75vw, 13px); top:50%; transform:translateY(-50%); width:clamp(46px, 3.6vw, 62px); height:clamp(24px, 2.2vh, 32px); border-radius:999px; background:rgba(255,255,255,.12); border:1px solid rgba(225,189,93,.28); }
+body.tv .tv-toggle::after { content:""; position:absolute; left:clamp(12px, .95vw, 17px); top:50%; transform:translateY(-50%); width:clamp(18px, 1.6vw, 26px); height:clamp(18px, 1.6vw, 26px); border-radius:50%; background:#f6f0e5; transition:left .18s ease; }
+body.tv .tv-toggle.on { color:#f7d36d; }
+body.tv .tv-toggle.on::before { background:rgba(225,189,93,.28); }
+body.tv .tv-toggle.on::after { left:clamp(35px, 2.9vw, 50px); background:#f7d36d; }
+body.tv .tv-info-value { color:#76e06c; font-size:clamp(18px, 1.45vw, 26px); font-weight:750; white-space:nowrap; }
+body.tv #settingsSheet .sheet-foot { flex:0 0 auto; position:relative; padding:clamp(12px, 1.5vh, 22px) 0 clamp(18px, 2vh, 28px) !important; border:0 !important; background:linear-gradient(180deg, transparent, rgba(3,8,17,.96) 32%); }
+body.tv #settingsSheet .btn-apply {
+  width:100%; max-width:min(1740px, 96vw); margin:0 auto; min-height:clamp(64px, 6.5vh, 88px); border-radius:18px;
+  display:grid; place-items:center; font-family:"ReemKufi", "Segoe UI", system-ui, sans-serif; font-size:clamp(24px, 2.1vw, 38px); font-weight:900;
+  color:#f4cf75; background:linear-gradient(90deg, rgba(61,73,21,.72), rgba(25,35,22,.92)); border:1px solid rgba(225,189,93,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 12px 26px rgba(0,0,0,.28);
+}
+
+/* ---------------------------------------------------------------- View picker */
+body.tv .sheet:not(#settingsSheet) { border-radius:var(--tv-radius) var(--tv-radius) 0 0; background:linear-gradient(180deg, #07101d, #030811); border-color:rgba(225,189,93,.28); }
+body.tv #sectionSheet .sheet-body { padding-inline:var(--tv-pad-x); }
+body.tv .sec-search { min-height:clamp(52px, 5vh, 68px); font-size:clamp(18px, 1.5vw, 26px); }
+body.tv .sec-item { min-height:clamp(56px, 5.8vh, 76px); font-size:clamp(17px, 1.45vw, 24px); border-radius:16px; }
+
+/* ---------------------------------------------------------------- D-pad focus */
+body.tv :focus,
+body.tv :focus-visible { outline:none !important; }
+body.tv .tv-focus {
+  outline:4px solid var(--tv-focus) !important; outline-offset:4px; border-radius:18px;
+  box-shadow:0 0 0 7px rgba(255,217,109,.22), 0 0 26px rgba(255,217,109,.34) !important;
+}
+body.tv .topbar .tv-focus,
+body.tv .ar-size-btn.tv-focus,
+body.tv .icon-btn.tv-focus { border-radius:999px; }
+body.tv .reader.tv-focus,
+body.tv .reader:focus { outline:0 !important; box-shadow:0 0 0 3px rgba(255,217,109,.50), 0 28px 58px rgba(0,0,0,.42) !important; }
+body.tv .prayer-ribbon.tv-focus { outline:3px solid var(--tv-focus) !important; outline-offset:4px; }
+body.tv .tv-set-row.tv-focus { outline-offset:3px; }
+
+@media (max-width: 1366px) {
+  body.tv .prayer-ribbon { left:clamp(280px, 25vw, 390px); right:clamp(270px, 25vw, 380px); }
+  body.tv .tv-set-row { grid-template-columns:clamp(52px, 4.4vw, 64px) minmax(280px, 1fr) minmax(280px, auto); }
+  body.tv .tv-seg button { min-width:82px; padding-inline:14px; }
+}
+
+/* ============================================================================
+   Rev I-4 — TV-only remote focus walker, stability, and 10-foot polish
+   Scope remains body.tv only. Mobile and tablet styles are not touched.
+   ============================================================================ */
+
+/* Header/prayer merge: readable from sofa distance, with city and status visible. */
+body.tv .topbar {
+  min-height:clamp(78px, 8.2vh, 106px);
+  height:clamp(78px, 8.2vh, 106px);
+  padding-top:clamp(10px, 1.3vh, 18px);
+  padding-bottom:clamp(10px, 1.3vh, 18px);
+}
+body.tv .section-pick .current { font-size:clamp(26px, 2.3vw, 44px); }
+body.tv .prayer-ribbon {
+  top:clamp(15px, 1.8vh, 24px);
+  left:clamp(310px, 24vw, 500px);
+  right:clamp(360px, 30vw, 620px);
+  height:clamp(54px, 5.5vh, 76px);
+  padding-inline:clamp(20px, 1.6vw, 34px);
+  gap:clamp(12px, 1vw, 20px);
+  font-size:clamp(18px, 1.42vw, 26px);
+  border-color:rgba(225,189,93,.34);
+  background:linear-gradient(90deg, rgba(61,73,21,.70), rgba(12,24,24,.90));
+}
+body.tv .prayer-ribbon.manual-city #prayerCity::after {
+  content:"  Manual";
+  color:#d8f276;
+  font-size:.78em;
+  font-weight:700;
+  opacity:.92;
+}
+body.tv .prayer-ribbon .approx.conn-dot {
+  width:auto; height:auto; min-height:0; padding:0 0 0 clamp(16px, 1.2vw, 24px);
+  display:inline-flex !important; align-items:center; justify-content:center; gap:8px;
+  text-indent:0; overflow:visible; white-space:nowrap; border-radius:999px;
+  background:transparent !important; box-shadow:none !important;
+  color:#d7cfbf; font-size:clamp(15px, 1.05vw, 20px); font-weight:750;
+  border-left:1px solid rgba(225,189,93,.25);
+}
+body.tv .prayer-ribbon .approx.conn-dot::before {
+  content:""; width:clamp(9px, .75vw, 13px); height:clamp(9px, .75vw, 13px); border-radius:50%;
+  background:var(--tv-muted); box-shadow:0 0 0 5px rgba(255,255,255,.05);
+}
+body.tv .prayer-ribbon .approx.conn-dot.is-online::before { background:var(--tv-green); box-shadow:0 0 0 5px rgba(119,215,100,.16); }
+body.tv .prayer-ribbon .approx.conn-dot.is-offline::before { background:#e16652; box-shadow:0 0 0 5px rgba(225,102,82,.18); }
+body.tv .prayer-ribbon .approx.conn-dot.is-approx::before { background:#e0b34f; box-shadow:0 0 0 5px rgba(224,179,79,.18); }
+
+/* Top bar A-/A+ reliability: larger target, stronger focus, no overlap. */
+body.tv .ar-size { gap:clamp(12px, 1vw, 20px); }
+body.tv .ar-size-btn,
+body.tv .topbar .icon-btn {
+  width:clamp(62px, 5.2vw, 88px);
+  height:clamp(62px, 5.2vw, 88px);
+  font-size:clamp(24px, 2vw, 36px);
+  border-width:1.5px;
+}
+body.tv .topbar .icon-btn.tv-focus,
+body.tv .ar-size-btn.tv-focus {
+  outline:4px solid var(--tv-focus) !important;
+  outline-offset:5px;
+  box-shadow:0 0 0 8px rgba(255,217,109,.20), 0 0 30px rgba(255,217,109,.38), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+
+/* Main card polish: smaller title, stronger contrast, more balanced TV spacing. */
+body.tv .stage { padding-top:clamp(14px, 1.6vh, 24px); }
+body.tv .reader { border-color:rgba(225,189,93,.58); }
+body.tv .item-title {
+  font-size:clamp(20px, 1.75vw, 30px);
+  font-weight:760;
+  margin-bottom:clamp(6px, .65vh, 12px);
+  color:#f4efe5;
+}
+body.tv .reader-scroll > .arabic {
+  color:#fff8ee;
+  border-color:rgba(255,255,255,.24);
+  background:linear-gradient(180deg, rgba(30,40,38,.90), rgba(10,17,24,.92));
+}
+body.tv .translation { color:#f5f1e8; font-weight:650; }
+body.tv .translit { color:#e0ce79; font-weight:700; }
+
+/* Settings: deterministic row walker visual states. */
+body.tv .tv-set-row.tv-row-focus,
+body.tv #settingsSheet .btn-apply.tv-row-focus,
+body.tv #settingsSheet .sheet-head .icon-btn.tv-row-focus {
+  outline:4px solid var(--tv-focus) !important;
+  outline-offset:4px;
+  border-color:rgba(255,217,109,.82) !important;
+  box-shadow:0 0 0 8px rgba(255,217,109,.20), 0 0 30px rgba(255,217,109,.34), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+body.tv .tv-control-focus {
+  box-shadow:0 0 0 3px rgba(255,217,109,.72), 0 0 18px rgba(255,217,109,.32), inset 0 1px 0 rgba(255,255,255,.12) !important;
+  border-color:rgba(255,217,109,.82) !important;
+}
+body.tv .tv-set-row.tv-row-focus .tv-set-name { color:#fff6df; }
+body.tv .tv-set-row.tv-row-focus .tv-set-desc { color:#eee2c9; }
+
+/* City selection is a single TV-friendly remote control, not a cramped six-button row. */
+body.tv .tv-cycle {
+  min-width:clamp(230px, 18vw, 360px);
+  height:clamp(52px, 4.8vh, 70px);
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:clamp(12px, 1vw, 20px);
+  padding:0 clamp(16px, 1.4vw, 28px); border-radius:999px;
+  background:linear-gradient(180deg, rgba(25,35,48,.96), rgba(9,16,26,.98));
+  border:1px solid rgba(255,255,255,.16); color:#f6f0e5;
+  font-size:clamp(18px, 1.45vw, 26px); font-weight:850;
+}
+body.tv .tv-cycle-value { color:#ffe27a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center; }
+body.tv .tv-cycle-arrow { color:#d8c75b; font-size:1.35em; line-height:1; }
+body.tv .tv-cycle.tv-control-focus { background:linear-gradient(180deg, rgba(75,85,28,.86), rgba(25,35,22,.96)); }
+
+/* Older/720p TV protection: keep header and settings readable without crowding. */
+@media (max-width: 1366px) {
+  body.tv { --tv-pad-x:clamp(30px, 3.2vw, 54px); }
+  body.tv .brand-mark { width:52px; height:52px; }
+  body.tv .section-pick { flex-basis:240px; min-width:200px; }
+  body.tv .section-pick .current { font-size:30px; }
+  body.tv .prayer-ribbon {
+    left:310px; right:325px; height:58px; font-size:18px; padding-inline:18px; gap:12px;
+  }
+  body.tv .ar-size-btn,
+  body.tv .topbar .icon-btn { width:62px; height:62px; font-size:24px; }
+  body.tv .reader-scroll { padding-inline:42px; gap:12px; }
+  body.tv .item-title { font-size:24px; }
+  body.tv .reader-scroll > .arabic { min-height:120px; padding-inline:42px !important; }
+  body.tv .tv-set-row { grid-template-columns:56px minmax(260px, 1fr) minmax(250px, auto); min-height:82px; padding-inline:20px; }
+  body.tv .tv-set-name { font-size:24px; }
+  body.tv .tv-set-desc { font-size:15px; }
+  body.tv .tv-cycle { min-width:250px; }
+}
+
+
+/* Rev I-4: deterministic TV focus walker states. No mobile/tablet selectors. */
+body.tv .tv-set-row[data-tv-focus-kind="info"].tv-row-focus {
+  outline-color:rgba(255,217,109,.58) !important;
+}
+body.tv .tv-set-row.tv-row-focus .tv-set-icon {
+  border-color:rgba(255,217,109,.86);
+  box-shadow:0 0 0 5px rgba(255,217,109,.16), 0 0 22px rgba(255,217,109,.22);
+}
+body.tv .tv-stepper button.tv-control-focus,
+body.tv .tv-seg button.tv-control-focus,
+body.tv .tv-toggle.tv-control-focus,
+body.tv .tv-cycle.tv-control-focus {
+  transform:scale(1.035);
+}
+body.tv #settingsSheet .sheet-head .icon-btn.tv-control-focus::before {
+  color:#fff3bd;
+}
+
+
+/* ============================================================================
+   Rev I-6 — calm light theme, TV settings grouping, dark green option
+   Scope: body.tv only. Mobile/tablet CSS remains untouched.
+   ============================================================================ */
+body.tv .topbar { display:flex !important; align-items:center !important; gap:clamp(10px, .9vw, 18px) !important; overflow:hidden; }
+body.tv .section-pick { flex:0 1 clamp(190px, 18vw, 340px) !important; min-width:clamp(150px, 15vw, 260px) !important; }
+body.tv .prayer-ribbon,
+body.tv .topbar > .prayer-ribbon {
+  position:relative !important; inset:auto !important; flex:1 1 auto !important;
+  min-width:clamp(260px, 26vw, 520px) !important; max-width:clamp(420px, 44vw, 760px) !important;
+  height:clamp(48px, 5vh, 68px) !important; margin:0 !important; padding:0 clamp(14px, 1.1vw, 22px) !important;
+  gap:clamp(8px, .7vw, 14px) !important; font-size:clamp(16px, 1.18vw, 22px) !important; white-space:nowrap;
+}
+body.tv .prayer-ribbon.hide, body.tv.tv-prayer-hidden .prayer-ribbon { display:none !important; }
+body.tv .prayer-ribbon::before { width:clamp(28px, 2.5vw, 44px) !important; height:clamp(28px, 2.5vw, 44px) !important; }
+body.tv .prayer-ribbon .next, body.tv .prayer-ribbon .time { flex:0 0 auto; }
+body.tv .prayer-ribbon #prayerCity { flex:1 1 auto; min-width:0; max-width:clamp(90px, 12vw, 220px); overflow:hidden; text-overflow:ellipsis; }
+body.tv .prayer-ribbon.manual-city #prayerCity::after { content:" Manual" !important; font-size:.72em !important; }
+body.tv .prayer-ribbon .approx.conn-dot { flex:0 0 auto; padding-left:clamp(10px, .7vw, 14px) !important; font-size:clamp(12px, .82vw, 16px) !important; }
+body.tv .ar-size { margin-left:0 !important; flex:0 0 auto; }
+body.tv .topbar .icon-btn, body.tv .ar-size-btn { flex:0 0 auto; width:clamp(52px, 4.6vw, 76px) !important; height:clamp(52px, 4.6vw, 76px) !important; }
+
+body.tv[data-theme="elder-light"] {
+  --tv-text:#1c2019; --tv-muted:#4d5547; --tv-panel:rgba(251,245,232,.88); --tv-panel-2:rgba(244,236,217,.90); --tv-line:rgba(121,101,48,.35);
+  background:radial-gradient(80% 80% at 50% -20%, rgba(214,181,92,.18), transparent 58%), linear-gradient(180deg, #fbf5e8 0%, #ede3ce 100%) !important;
+}
+body.tv[data-theme="elder-light"] .topbar,
+body.tv[data-theme="elder-light"] .reader,
+body.tv[data-theme="elder-light"] .reader-scroll > .arabic,
+body.tv[data-theme="elder-light"] .reader-scroll .translit,
+body.tv[data-theme="elder-light"] .reader-scroll .english-translation,
+body.tv[data-theme="elder-light"] .reader-scroll .urdu-translation,
+body.tv[data-theme="elder-light"] #settingsSheet,
+body.tv[data-theme="elder-light"] .tv-set-row { background:linear-gradient(180deg, rgba(255,250,240,.92), rgba(239,230,210,.94)) !important; color:#1c2019 !important; }
+body.tv[data-theme="elder-light"] .item-title, body.tv[data-theme="elder-light"] .translation, body.tv[data-theme="elder-light"] .tv-set-name { color:#1c2019 !important; }
+body.tv[data-theme="elder-light"] .translit, body.tv[data-theme="elder-light"] .bismillah-row { color:#80631e !important; }
+
+body.tv .reader-scroll > .arabic {
+  direction:rtl !important; unicode-bidi:plaintext !important; display:block !important; text-align:center !important; line-height:1.55 !important;
+  word-spacing:.04em; letter-spacing:0 !important; white-space:normal !important; word-break:normal !important; overflow-wrap:normal !important; text-wrap:balance;
+  min-height:clamp(110px, 13vh, 180px) !important;
+}
+body.tv .arabic .waqf { display:inline !important; }
+body.tv .reader-scroll > .arabic br { display:none; }
+body.tv .bismillah-row[data-bismillah-size="small"] { font-size:clamp(28px, 2.6vw, 50px); }
+body.tv .bismillah-row[data-bismillah-size="large"] { font-size:clamp(34px, 3.2vw, 64px); }
+
+body.tv #settingsBody.tv-settings-list { gap:clamp(7px, .7vh, 12px) !important; }
+body.tv .tv-set-row { min-height:clamp(68px, 6.7vh, 96px) !important; }
+body.tv .tv-seg { max-width:100%; }
+body.tv .tv-seg button { min-width:clamp(78px, 6.2vw, 126px) !important; }
+body.tv .tv-toggle.on { background:linear-gradient(180deg, rgba(88,101,29,.86), rgba(35,45,18,.96)) !important; }
+
+@media (max-width: 1366px) {
+  body.tv { --tv-pad-x:clamp(22px, 2.4vw, 42px); }
+  body.tv .brand-mark { width:44px !important; height:44px !important; }
+  body.tv .section-pick { flex-basis:190px !important; min-width:160px !important; }
+  body.tv .section-pick .current { font-size:24px !important; }
+  body.tv .topbar > .prayer-ribbon { min-width:300px !important; max-width:430px !important; height:50px !important; padding-inline:12px !important; gap:8px !important; font-size:15px !important; }
+  body.tv .prayer-ribbon::before { width:32px !important; height:32px !important; }
+  body.tv .prayer-ribbon #prayerCity { max-width:115px !important; }
+  body.tv .prayer-ribbon .approx.conn-dot { font-size:11px !important; padding-left:8px !important; }
+  body.tv .topbar .icon-btn, body.tv .ar-size-btn { width:50px !important; height:50px !important; font-size:20px !important; }
+  body.tv .reader-scroll > .arabic { font-size:min(var(--ar-size, 44px), 44px) !important; line-height:1.45 !important; padding-inline:34px !important; }
+  body.tv .tv-set-row { grid-template-columns:48px minmax(210px, 1fr) minmax(230px, auto) !important; min-height:72px !important; }
+  body.tv .tv-set-name { font-size:21px !important; }
+  body.tv .tv-set-desc { font-size:13px !important; }
+  body.tv .tv-seg button { min-width:70px !important; padding-inline:10px !important; font-size:15px !important; }
+  body.tv .tv-stepper button, body.tv .tv-toggle { height:44px !important; }
+}
+
+
+/* Rev I-6 calm white light theme + dark green accent. TV-only scope. */
+body.tv.tv-accent-green {
+  --accent:#174f37 !important;
+  --accent-2:#2e7d4f !important;
+  --accent-soft:rgba(23,79,55,.22) !important;
+  --focus:#1f6b48 !important;
+}
+body.tv[data-theme="elder-light"] {
+  --tv-bg:#f7fbf4 !important;
+  --tv-text:#123327 !important;
+  --tv-muted:#466657 !important;
+  --tv-panel:rgba(255,255,250,.94) !important;
+  --tv-panel-2:rgba(235,244,232,.96) !important;
+  --tv-line:rgba(23,79,55,.22) !important;
+  --accent:#174f37 !important;
+  --accent-2:#2e7d4f !important;
+  --focus:#174f37 !important;
+  color:#123327 !important;
+  background:
+    radial-gradient(75% 75% at 50% -18%, rgba(46,125,79,.16), transparent 60%),
+    linear-gradient(180deg, #fbfff8 0%, #eef7ea 52%, #e4efdf 100%) !important;
+}
+body.tv[data-theme="elder-light"] .topbar,
+body.tv[data-theme="elder-light"] .reader,
+body.tv[data-theme="elder-light"] #settingsSheet,
+body.tv[data-theme="elder-light"] .tv-set-row,
+body.tv[data-theme="elder-light"] .reader-scroll > .arabic,
+body.tv[data-theme="elder-light"] .reader-scroll .translit,
+body.tv[data-theme="elder-light"] .reader-scroll .english-translation,
+body.tv[data-theme="elder-light"] .reader-scroll .urdu-translation {
+  background:linear-gradient(180deg, rgba(255,255,251,.96), rgba(236,246,231,.96)) !important;
+  color:#123327 !important;
+  border-color:rgba(23,79,55,.26) !important;
+}
+body.tv[data-theme="elder-light"] .bismillah-row,
+body.tv[data-theme="elder-light"] .reader-scroll > .arabic {
+  color:#123327 !important;
+  text-shadow:none !important;
+}
+body.tv[data-theme="elder-light"] .translit,
+body.tv[data-theme="elder-light"] .counter,
+body.tv[data-theme="elder-light"] .tv-set-name,
+body.tv[data-theme="elder-light"] .item-title {
+  color:#174f37 !important;
+}
+body.tv[data-theme="elder-light"] .translation,
+body.tv[data-theme="elder-light"] .tv-set-desc,
+body.tv[data-theme="elder-light"] .english-translation,
+body.tv[data-theme="elder-light"] .urdu-translation {
+  color:#243f34 !important;
+}
+body.tv[data-theme="elder-light"] .prayer-ribbon,
+body.tv[data-theme="elder-light"] .topbar > .prayer-ribbon {
+  background:linear-gradient(180deg, rgba(255,255,252,.96), rgba(229,243,224,.96)) !important;
+  color:#123327 !important;
+  border-color:rgba(23,79,55,.34) !important;
+}
+body.tv[data-theme="elder-light"] .icon-btn,
+body.tv[data-theme="elder-light"] .ar-size-btn,
+body.tv[data-theme="elder-light"] .tv-seg button,
+body.tv[data-theme="elder-light"] .tv-stepper button,
+body.tv[data-theme="elder-light"] .tv-toggle,
+body.tv[data-theme="elder-light"] .tv-cycle {
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(228,240,224,.96)) !important;
+  color:#123327 !important;
+  border-color:rgba(23,79,55,.28) !important;
+}
+body.tv[data-theme="elder-light"] .tv-seg button.active,
+body.tv[data-theme="elder-light"] .tv-toggle.on,
+body.tv[data-theme="elder-light"] .btn-apply,
+body.tv[data-theme="elder-light"] .tv-control-focus {
+  background:linear-gradient(180deg, rgba(46,125,79,.95), rgba(23,79,55,.98)) !important;
+  color:#fffdf2 !important;
+  border-color:rgba(23,79,55,.78) !important;
+  box-shadow:0 0 0 3px rgba(23,79,55,.18), 0 0 24px rgba(23,79,55,.32) !important;
+}
+body.tv .tv-settings-section {
+  display:flex; align-items:center; justify-content:center;
+  margin:clamp(8px, .9vh, 14px) 0 clamp(2px, .3vh, 6px);
+  min-height:clamp(24px, 2.6vh, 36px);
+  color:var(--accent, #d8b24c);
+  font-weight:900; letter-spacing:.16em; text-transform:uppercase;
+  font-size:clamp(14px, 1.15vw, 20px);
+}
+body.tv .tv-settings-section::before,
+body.tv .tv-settings-section::after {
+  content:""; flex:1 1 auto; height:1px; max-width:38%;
+  background:linear-gradient(90deg, transparent, rgba(216,178,76,.45), transparent);
+  margin:0 clamp(12px, 1vw, 22px);
+}
+body.tv[data-theme="elder-light"] .tv-settings-section::before,
+body.tv[data-theme="elder-light"] .tv-settings-section::after {
+  background:linear-gradient(90deg, transparent, rgba(23,79,55,.36), transparent);
+}
+body.tv .tv-seg button.active {
+  transform:scale(1.035);
+}
+body.tv .tv-control-focus,
+body.tv .tv-row-focus {
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+body.tv .tv-row-focus {
+  transform:translateZ(0) scale(1.006);
+}
+
+
+/* ============================================================================
+   Rev I-7 — final remote polish and live feedback
+   Scope: body.tv only. Mobile/tablet styling remains untouched.
+   ============================================================================ */
+body.tv {
+  --tv-focus-strong: 0 0 0 5px rgba(255,217,109,.70), 0 0 0 12px rgba(255,217,109,.22), 0 0 42px rgba(255,217,109,.48), 0 18px 42px rgba(0,0,0,.46);
+  --tv-focus-row: 0 0 0 4px rgba(255,217,109,.72), 0 0 0 11px rgba(255,217,109,.18), 0 0 34px rgba(255,217,109,.32), inset 0 1px 0 rgba(255,255,255,.10);
+}
+body.tv.tv-accent-green { --tv-olive:#2e7d4f; --tv-green:#5fcb84; --tv-focus:#77d79a; }
+body.tv.tv-accent-green .bismillah-row { color:#9ed8a9 !important; }
+body.tv.tv-accent-green .progress-fill { background:linear-gradient(90deg, #174f37, #77d79a) !important; }
+body.tv .tv-set-row,
+body.tv .tv-stepper button,
+body.tv .tv-toggle,
+body.tv .tv-seg button,
+body.tv .tv-cycle,
+body.tv #settingsSheet .btn-apply,
+body.tv .ar-size-btn,
+body.tv .topbar .icon-btn {
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease, color .14s ease;
+}
+body.tv .tv-set-row.tv-row-focus {
+  transform:translateZ(0) scale(1.012) !important;
+  border-color:rgba(255,217,109,.94) !important;
+  box-shadow:var(--tv-focus-row) !important;
+  background:linear-gradient(180deg, rgba(32,43,42,.96), rgba(11,18,25,.96)) !important;
+}
+body.tv .tv-set-row.tv-row-focus .tv-set-icon {
+  transform:scale(1.08);
+  color:#fff1ad !important;
+  box-shadow:0 0 0 6px rgba(255,217,109,.20), 0 0 30px rgba(255,217,109,.34) !important;
+}
+body.tv .tv-control-focus,
+body.tv .tv-stepper button.tv-control-focus,
+body.tv .tv-seg button.tv-control-focus,
+body.tv .tv-toggle.tv-control-focus,
+body.tv .tv-cycle.tv-control-focus,
+body.tv .ar-size-btn.tv-focus,
+body.tv .topbar .icon-btn.tv-focus {
+  transform:scale(1.075) !important;
+  border-color:rgba(255,217,109,1) !important;
+  box-shadow:var(--tv-focus-strong) !important;
+  z-index:3;
+}
+body.tv .tv-seg button.active {
+  transform:scale(1.045);
+  color:#fff6c4 !important;
+  background:linear-gradient(180deg, rgba(216,178,76,.88), rgba(93,75,21,.95)) !important;
+  box-shadow:inset 0 0 0 2px rgba(255,239,176,.40), 0 0 20px rgba(216,178,76,.24) !important;
+}
+body.tv .tv-seg[data-seg="themeAccent"] {
+  gap:clamp(12px, 1vw, 20px) !important;
+  border:0 !important;
+  background:transparent !important;
+  overflow:visible !important;
+}
+body.tv .tv-seg[data-seg="themeAccent"] button {
+  position:relative;
+  min-width:clamp(96px, 7.6vw, 148px) !important;
+  border-radius:999px !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  overflow:visible;
+}
+body.tv .tv-seg[data-seg="themeAccent"] button::before {
+  content:"";
+  display:inline-block;
+  width:clamp(18px, 1.5vw, 26px);
+  height:clamp(18px, 1.5vw, 26px);
+  margin-right:10px;
+  border-radius:50%;
+  vertical-align:-4px;
+  background:#a8bd46;
+  box-shadow:0 0 0 2px rgba(255,255,255,.18), 0 0 12px rgba(0,0,0,.26);
+}
+body.tv .tv-seg[data-seg="themeAccent"] button[data-accent="gold"]::before { background:#d7b65c; }
+body.tv .tv-seg[data-seg="themeAccent"] button[data-accent="green"]::before { background:#2e7d4f; }
+body.tv .tv-seg[data-seg="themeAccent"] button.active::after {
+  content:"✓";
+  position:absolute;
+  right:clamp(10px, .8vw, 16px);
+  top:50%; transform:translateY(-50%);
+  color:#fff8cd; font-weight:950; font-size:1.05em;
+}
+body.tv .tv-toggle.on {
+  color:#fff4b5 !important;
+  background:linear-gradient(180deg, rgba(216,178,76,.46), rgba(70,79,24,.92)) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,239,176,.22), 0 0 18px rgba(216,178,76,.18) !important;
+}
+body.tv .tv-toggle:not(.on) {
+  color:#d0d4d1 !important;
+  background:linear-gradient(180deg, rgba(24,32,42,.92), rgba(8,13,20,.95)) !important;
+}
+body.tv .tv-step-val {
+  min-width:clamp(96px, 7vw, 140px) !important;
+  color:#ffe27a !important;
+  background:rgba(225,189,93,.10);
+  border:1px solid rgba(225,189,93,.26);
+  border-radius:999px;
+  height:clamp(46px, 4.3vh, 62px);
+  display:grid; place-items:center;
+}
+body.tv #settingsSheet .btn-apply {
+  min-height:clamp(76px, 7.5vh, 104px) !important;
+  max-width:min(1480px, 90vw) !important;
+  border-radius:22px !important;
+  color:#fff2aa !important;
+  background:linear-gradient(180deg, rgba(88,101,29,.92), rgba(39,48,17,.98)) !important;
+  box-shadow:0 0 0 1px rgba(255,239,176,.16), 0 20px 42px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+body.tv #settingsSheet .btn-apply.tv-row-focus,
+body.tv #settingsSheet .btn-apply.tv-control-focus {
+  transform:scale(1.025) !important;
+  box-shadow:var(--tv-focus-strong) !important;
+}
+body.tv[data-theme="elder-light"] .tv-set-row.tv-row-focus {
+  background:linear-gradient(180deg, rgba(255,255,251,.98), rgba(222,240,217,.98)) !important;
+  border-color:rgba(23,79,55,.78) !important;
+  box-shadow:0 0 0 4px rgba(23,79,55,.58), 0 0 0 11px rgba(23,79,55,.16), 0 0 30px rgba(23,79,55,.28) !important;
+}
+body.tv[data-theme="elder-light"] .tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-stepper button.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-seg button.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-toggle.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-cycle.tv-control-focus {
+  box-shadow:0 0 0 5px rgba(23,79,55,.62), 0 0 0 12px rgba(23,79,55,.14), 0 0 36px rgba(23,79,55,.28) !important;
+  border-color:rgba(23,79,55,.88) !important;
+}
+body.tv[data-theme="elder-light"] .tv-seg button.active,
+body.tv[data-theme="elder-light"] .tv-toggle.on,
+body.tv[data-theme="elder-light"] #settingsSheet .btn-apply {
+  background:linear-gradient(180deg, rgba(46,125,79,.96), rgba(23,79,55,.98)) !important;
+  color:#fffdf2 !important;
+}
+@media (max-width: 1366px) {
+  body.tv .tv-set-row.tv-row-focus { transform:scale(1.008) !important; }
+  body.tv .tv-control-focus { transform:scale(1.045) !important; }
+  body.tv #settingsSheet .btn-apply { min-height:72px !important; }
+}
+
+
+/* ============================================================================
+   Rev I-8 — major TV visual hierarchy and live feedback polish
+   Scope: body.tv only. Mobile/tablet styles remain untouched.
+   ============================================================================ */
+body.tv {
+  --tv-focus-strong: 0 0 0 6px rgba(255,219,112,.78), 0 0 0 14px rgba(255,219,112,.24), 0 0 54px rgba(255,219,112,.56), 0 22px 48px rgba(0,0,0,.54);
+  --tv-focus-row: 0 0 0 4px rgba(255,219,112,.86), 0 0 0 12px rgba(255,219,112,.22), 0 0 42px rgba(255,219,112,.40), inset 0 1px 0 rgba(255,255,255,.13);
+}
+body.tv .stage {
+  padding:clamp(10px, 1.15vh, 18px) var(--tv-pad-x) 0 !important;
+}
+body.tv .reader {
+  max-width:min(1760px, 94vw) !important;
+  border-color:rgba(225,189,93,.58) !important;
+}
+body.tv .reader-scroll {
+  padding:clamp(14px, 1.45vh, 24px) clamp(64px, 5vw, 106px) clamp(18px, 1.9vh, 32px) !important;
+  gap:clamp(8px, .9vh, 15px) !important;
+}
+body.tv .bismillah-row {
+  max-width:76% !important;
+  margin:0 auto clamp(0px, .15vh, 4px) !important;
+  padding:0 clamp(76px, 6vw, 130px) !important;
+  font-size:clamp(26px, 2.35vw, 46px) !important;
+  line-height:1.12 !important;
+  font-weight:650 !important;
+  opacity:.92;
+  text-shadow:0 0 14px rgba(225,189,93,.18) !important;
+}
+body.tv .bismillah-row::before,
+body.tv .bismillah-row::after {
+  width:clamp(54px, 5.8vw, 118px) !important;
+  opacity:.52 !important;
+}
+body.tv .bismillah-row[data-bismillah-size="small"],
+body.tv .bismillah-row[data-bismillah-size="normal"] { font-size:clamp(22px, 2.05vw, 38px) !important; }
+body.tv .bismillah-row[data-bismillah-size="medium"] { font-size:clamp(25px, 2.25vw, 44px) !important; }
+body.tv .bismillah-row[data-bismillah-size="large"] { font-size:clamp(29px, 2.55vw, 50px) !important; }
+body.tv .bismillah-row[data-bismillah-size="xl"] { font-size:clamp(33px, 2.9vw, 56px) !important; }
+body.tv .item-title {
+  margin:0 auto clamp(5px, .55vh, 10px) !important;
+  max-width:78% !important;
+  font-size:clamp(22px, 1.9vw, 34px) !important;
+  line-height:1.05 !important;
+  font-weight:760 !important;
+  opacity:.96;
+}
+body.tv .reader-scroll > .arabic {
+  min-height:clamp(178px, 24vh, 330px) !important;
+  padding:clamp(26px, 2.4vw, 48px) clamp(44px, 3.8vw, 82px) !important;
+  font-size:var(--ar-size, clamp(58px, 5.7vw, 106px)) !important;
+  line-height:var(--ar-lh, 1.58) !important;
+  font-weight:760 !important;
+  letter-spacing:0 !important;
+  word-spacing:.08em !important;
+  text-wrap:balance;
+  color:#fff7ec !important;
+  border-color:rgba(225,189,93,.30) !important;
+  background:linear-gradient(180deg, rgba(24,36,34,.90), rgba(7,15,22,.92)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 18px 38px rgba(0,0,0,.28), 0 0 42px rgba(225,189,93,.06) !important;
+}
+body.tv .reader-scroll > .arabic[data-script="indopak"] { line-height:2.05 !important; }
+body.tv .side-zone {
+  gap:clamp(9px, .9vh, 14px) !important;
+}
+body.tv .reader-scroll .translit,
+body.tv .reader-scroll .english-translation,
+body.tv .reader-scroll .urdu-translation {
+  padding:clamp(13px, 1.15vw, 22px) clamp(30px, 2.7vw, 58px) !important;
+}
+body.tv .translit { font-size:var(--tl-size, clamp(20px, 1.55vw, 28px)) !important; line-height:1.38 !important; }
+body.tv .translation { font-size:var(--tr-size, clamp(20px, 1.55vw, 28px)) !important; line-height:1.42 !important; }
+body.tv .bottombar { padding-top:clamp(7px, .8vh, 12px) !important; padding-bottom:clamp(14px, 1.45vh, 24px) !important; }
+body.tv .counter { font-size:clamp(22px, 1.9vw, 34px) !important; }
+
+/* Stronger 10-foot focus treatment */
+body.tv .tv-set-row.tv-row-focus {
+  transform:translateZ(0) scale(1.016) !important;
+  border-color:rgba(255,219,112,.98) !important;
+  box-shadow:var(--tv-focus-row) !important;
+}
+body.tv .tv-control-focus,
+body.tv .tv-stepper button.tv-control-focus,
+body.tv .tv-seg button.tv-control-focus,
+body.tv .tv-toggle.tv-control-focus,
+body.tv .tv-cycle.tv-control-focus,
+body.tv .ar-size-btn.tv-focus,
+body.tv .topbar .icon-btn.tv-focus {
+  transform:scale(1.085) !important;
+  box-shadow:var(--tv-focus-strong) !important;
+}
+body.tv .tv-seg button.active {
+  transform:scale(1.052) !important;
+  color:#fff8c8 !important;
+  background:linear-gradient(180deg, rgba(235,198,91,.94), rgba(111,88,25,.98)) !important;
+  box-shadow:inset 0 0 0 2px rgba(255,246,197,.46), 0 0 28px rgba(235,198,91,.30) !important;
+}
+body.tv .tv-toggle.on {
+  color:#fff8c8 !important;
+  background:linear-gradient(180deg, rgba(235,198,91,.58), rgba(75,84,27,.96)) !important;
+  box-shadow:inset 0 0 0 2px rgba(255,246,197,.28), 0 0 26px rgba(235,198,91,.24) !important;
+}
+body.tv #settingsSheet .btn-apply {
+  min-height:clamp(84px, 8vh, 112px) !important;
+  font-size:clamp(26px, 2.2vw, 42px) !important;
+  border-radius:24px !important;
+}
+body.tv .tv-step-val {
+  min-width:clamp(112px, 8vw, 160px) !important;
+  font-size:clamp(24px, 2.05vw, 36px) !important;
+}
+
+/* Calm light keeps dark green as the premium anchor. */
+body.tv[data-theme="elder-light"] .reader-scroll > .arabic {
+  color:#0f3326 !important;
+  background:linear-gradient(180deg, rgba(255,255,252,.98), rgba(229,243,224,.98)) !important;
+  border-color:rgba(23,79,55,.34) !important;
+  box-shadow:0 18px 38px rgba(23,79,55,.10), inset 0 1px 0 rgba(255,255,255,.70) !important;
+}
+body.tv[data-theme="elder-light"] .bismillah-row { color:#174f37 !important; opacity:.9; }
+body.tv[data-theme="elder-light"] .item-title { color:#123327 !important; }
+
+@media (max-width: 1366px) {
+  body.tv .reader-scroll { padding-inline:34px !important; gap:8px !important; }
+  body.tv .bismillah-row { font-size:clamp(22px, 2.2vw, 34px) !important; padding-inline:54px !important; }
+  body.tv .item-title { font-size:22px !important; margin-bottom:4px !important; }
+  body.tv .reader-scroll > .arabic {
+    font-size:var(--ar-size, 58px) !important;
+    min-height:clamp(150px, 22vh, 230px) !important;
+    padding:24px 34px !important;
+    line-height:var(--ar-lh, 1.52) !important;
+  }
+  body.tv .translit, body.tv .translation { font-size:20px !important; }
+  body.tv .tv-control-focus { transform:scale(1.05) !important; }
+}
+
+/* ============================================================================
+   Rev I-9 — TV visual hierarchy and spacing overhaul
+   Scope: body.tv only. Mobile and tablet CSS remain untouched.
+   ============================================================================ */
+body.tv {
+  --tv-focus-strong: 0 0 0 6px rgba(255,219,112,.86), 0 0 0 15px rgba(255,219,112,.25), 0 0 62px rgba(255,219,112,.58), 0 24px 54px rgba(0,0,0,.58);
+  --tv-focus-row: 0 0 0 4px rgba(255,219,112,.90), 0 0 0 12px rgba(255,219,112,.22), 0 0 46px rgba(255,219,112,.46), inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+/* Canvas: remove dead air while keeping the calm TV-safe frame. */
+body.tv .stage {
+  padding:clamp(8px, .9vh, 14px) var(--tv-pad-x) 0 !important;
+}
+body.tv .reader {
+  max-width:min(1780px, 95vw) !important;
+  min-height:0 !important;
+  background:linear-gradient(180deg, rgba(18,27,33,.91), rgba(6,13,20,.94)) !important;
+  border-color:rgba(225,189,93,.62) !important;
+  box-shadow:0 30px 62px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+body.tv .reader-scroll {
+  padding:clamp(10px, 1.05vh, 18px) clamp(58px, 4.7vw, 104px) clamp(14px, 1.45vh, 26px) !important;
+  gap:clamp(6px, .65vh, 12px) !important;
+  justify-content:flex-start !important;
+}
+
+/* Hierarchy 1: refined, secondary Bismillah. */
+body.tv .bismillah-row {
+  order:1 !important;
+  max-width:68% !important;
+  margin:0 auto 0 !important;
+  padding:0 clamp(58px, 4.8vw, 104px) !important;
+  font-size:clamp(20px, 1.85vw, 36px) !important;
+  line-height:1.06 !important;
+  font-weight:600 !important;
+  opacity:.84 !important;
+  color:#d9bd70 !important;
+  text-shadow:0 0 10px rgba(225,189,93,.14) !important;
+}
+body.tv .bismillah-row::before,
+body.tv .bismillah-row::after {
+  width:clamp(42px, 4.4vw, 92px) !important;
+  opacity:.42 !important;
+}
+body.tv .bismillah-row[data-bismillah-size="small"],
+body.tv .bismillah-row[data-bismillah-size="normal"] { font-size:clamp(18px, 1.62vw, 31px) !important; }
+body.tv .bismillah-row[data-bismillah-size="medium"] { font-size:clamp(20px, 1.80vw, 35px) !important; }
+body.tv .bismillah-row[data-bismillah-size="large"] { font-size:clamp(23px, 2.05vw, 40px) !important; }
+body.tv .bismillah-row[data-bismillah-size="xl"] { font-size:clamp(26px, 2.30vw, 46px) !important; }
+
+/* Hierarchy 2: compact title, not competing with Arabic. */
+body.tv .item-title {
+  order:3 !important;
+  margin:0 auto clamp(3px, .35vh, 7px) !important;
+  max-width:76% !important;
+  font-size:clamp(20px, 1.65vw, 30px) !important;
+  line-height:1.02 !important;
+  font-weight:720 !important;
+  opacity:.92 !important;
+  letter-spacing:.01em !important;
+}
+body.tv:not(.show-tags) .reader-scroll .meta-row { display:none !important; }
+
+/* Hierarchy 3: Arabic is the hero. Preserve its size and allow scrolling. */
+body.tv .reader-scroll > .arabic {
+  order:4 !important;
+  min-height:clamp(220px, 31vh, 430px) !important;
+  padding:clamp(28px, 2.7vw, 54px) clamp(44px, 3.8vw, 84px) !important;
+  font-size:var(--ar-size, clamp(76px, 7.2vw, 132px)) !important;
+  line-height:var(--ar-lh, 1.46) !important;
+  font-weight:800 !important;
+  letter-spacing:0 !important;
+  word-spacing:.10em !important;
+  text-align:center !important;
+  color:#fff7ec !important;
+  border-color:rgba(225,189,93,.36) !important;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(225,189,93,.075), transparent 58%),
+    linear-gradient(180deg, rgba(25,38,36,.94), rgba(6,14,21,.95)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 20px 44px rgba(0,0,0,.30), 0 0 48px rgba(225,189,93,.08) !important;
+}
+body.tv .reader-scroll > .arabic[data-script="indopak"] { line-height:var(--ar-lh, 1.92) !important; }
+
+/* Supporting lines: readable but clearly secondary. */
+body.tv .side-zone { gap:clamp(7px, .72vh, 12px) !important; }
+body.tv .reader-scroll .translit,
+body.tv .reader-scroll .english-translation,
+body.tv .reader-scroll .urdu-translation {
+  padding:clamp(11px, 1vw, 20px) clamp(28px, 2.45vw, 54px) !important;
+}
+body.tv .translit { font-size:var(--tl-size, clamp(18px, 1.45vw, 26px)) !important; line-height:1.34 !important; opacity:.93; }
+body.tv .translation { font-size:var(--tr-size, clamp(18px, 1.45vw, 26px)) !important; line-height:1.38 !important; opacity:.94; }
+body.tv .urdu-translation { line-height:1.85 !important; }
+
+/* Bottom bar remains slim. */
+body.tv .bottombar {
+  padding-top:clamp(6px, .65vh, 10px) !important;
+  padding-bottom:clamp(12px, 1.2vh, 20px) !important;
+}
+body.tv .progress-track { height:clamp(5px, .55vh, 8px) !important; }
+body.tv .counter { font-size:clamp(19px, 1.6vw, 30px) !important; }
+
+/* Reading-card and settings focus states for 10-foot distance. */
+body.tv .reader.tv-focus,
+body.tv .reader:focus {
+  transform:scale(1.004) !important;
+  box-shadow:0 0 0 4px rgba(255,219,112,.62), 0 0 0 12px rgba(255,219,112,.16), 0 34px 70px rgba(0,0,0,.50) !important;
+}
+body.tv .tv-set-row.tv-row-focus {
+  transform:translateZ(0) scale(1.020) !important;
+  border-color:rgba(255,219,112,1) !important;
+  background:linear-gradient(180deg, rgba(35,45,36,.98), rgba(14,24,25,.98)) !important;
+  box-shadow:var(--tv-focus-row) !important;
+}
+body.tv .tv-set-row.tv-row-focus .tv-set-name { color:#fff8da !important; }
+body.tv .tv-set-row.tv-row-focus .tv-set-desc { color:#f1e5cc !important; }
+body.tv .tv-control-focus,
+body.tv .tv-stepper button.tv-control-focus,
+body.tv .tv-seg button.tv-control-focus,
+body.tv .tv-toggle.tv-control-focus,
+body.tv .tv-cycle.tv-control-focus,
+body.tv .ar-size-btn.tv-focus,
+body.tv .topbar .icon-btn.tv-focus {
+  transform:scale(1.095) !important;
+  border-color:rgba(255,226,122,1) !important;
+  box-shadow:var(--tv-focus-strong) !important;
+}
+
+/* Active segmented states: stronger selected treatment. */
+body.tv .tv-seg button.active {
+  transform:scale(1.060) !important;
+  color:#fff9d0 !important;
+  background:linear-gradient(180deg, rgba(239,203,98,.98), rgba(103,84,24,.98)) !important;
+  box-shadow:inset 0 0 0 2px rgba(255,249,208,.56), 0 0 34px rgba(239,203,98,.34) !important;
+  z-index:2;
+}
+body.tv .tv-toggle.on {
+  color:#fff9d0 !important;
+  background:linear-gradient(180deg, rgba(239,203,98,.62), rgba(67,82,24,.98)) !important;
+  box-shadow:inset 0 0 0 2px rgba(255,249,208,.34), 0 0 30px rgba(239,203,98,.28) !important;
+}
+body.tv #settingsSheet .btn-apply {
+  min-height:clamp(92px, 8.8vh, 122px) !important;
+  font-size:clamp(28px, 2.35vw, 44px) !important;
+  font-weight:950 !important;
+  border-radius:26px !important;
+  background:linear-gradient(180deg, #f0cb68, #8b6b20) !important;
+  color:#11180f !important;
+  box-shadow:0 20px 42px rgba(0,0,0,.38), 0 0 30px rgba(225,189,93,.22) !important;
+}
+
+/* Calm light: strong dark-green reading hierarchy. */
+body.tv[data-theme="elder-light"] .reader-scroll > .arabic {
+  color:#0d3324 !important;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(23,79,55,.08), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,252,.99), rgba(228,243,224,.99)) !important;
+  border-color:rgba(23,79,55,.38) !important;
+  box-shadow:0 20px 44px rgba(23,79,55,.12), inset 0 1px 0 rgba(255,255,255,.82) !important;
+}
+body.tv[data-theme="elder-light"] .bismillah-row { color:#174f37 !important; opacity:.78 !important; }
+body.tv[data-theme="elder-light"] .item-title { color:#173b2b !important; opacity:.94 !important; }
+body.tv[data-theme="elder-light"] .tv-set-row.tv-row-focus {
+  background:linear-gradient(180deg, rgba(255,255,251,.99), rgba(222,240,217,.99)) !important;
+  border-color:rgba(23,79,55,.86) !important;
+  box-shadow:0 0 0 4px rgba(23,79,55,.64), 0 0 0 12px rgba(23,79,55,.18), 0 0 34px rgba(23,79,55,.32) !important;
+}
+body.tv[data-theme="elder-light"] .tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-stepper button.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-seg button.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-toggle.tv-control-focus,
+body.tv[data-theme="elder-light"] .tv-cycle.tv-control-focus {
+  box-shadow:0 0 0 6px rgba(23,79,55,.68), 0 0 0 14px rgba(23,79,55,.16), 0 0 40px rgba(23,79,55,.32) !important;
+}
+
+@media (max-width: 1366px) {
+  body.tv .reader-scroll { padding-inline:30px !important; gap:6px !important; }
+  body.tv .bismillah-row { max-width:74% !important; font-size:clamp(18px, 1.8vw, 30px) !important; padding-inline:42px !important; }
+  body.tv .item-title { font-size:clamp(18px, 1.6vw, 26px) !important; margin-bottom:3px !important; }
+  body.tv .reader-scroll > .arabic {
+    min-height:clamp(190px, 29vh, 330px) !important;
+    font-size:var(--ar-size, 76px) !important;
+    padding:24px 30px !important;
+    line-height:var(--ar-lh, 1.42) !important;
+  }
+  body.tv .reader-scroll > .arabic[data-script="indopak"] { line-height:var(--ar-lh, 1.84) !important; }
+  body.tv .translit,
+  body.tv .translation { font-size:18px !important; }
+  body.tv .tv-set-row.tv-row-focus { transform:scale(1.010) !important; }
+  body.tv .tv-control-focus { transform:scale(1.055) !important; }
+}
